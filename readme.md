@@ -6,7 +6,7 @@ fly with fixed columns, header and/or footer.  Simple usage and a very small
 with basic functions like append, prepend or remove one row to the table.  
 
 __More informations and demos:__
-Please visit the projekt page [www.michaelkeck.de](http://michaelkeck.de/projects/jquery/tinytbl/).
+Please visit the project page [www.michaelkeck.de](http://michaelkeck.de/projects/jquery/tinytbl/).
 
 
 API description
@@ -14,7 +14,7 @@ API description
 
 ### Create
 
-Coverts a normal table into a TinyTable.  
+Convert a normal table into a TinyTable, simple use this command:  
 `$('.selector').tinytbl(object options);`
 
 
