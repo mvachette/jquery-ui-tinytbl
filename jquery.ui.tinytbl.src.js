@@ -612,11 +612,14 @@
 
         /* Destroy the TinyTable and rebuild the original table */
         destroy: function() {
-            var e = this.element, o = e.data('tbl'), h = e.data('cln').html();
-            e.html(h);
-            e.css({'display':'block'});
-            o.remove();
-            e.removeData();
+            var e = this.element;
+            if (e.data('tbl'))  {
+                var o = e.data('tbl'), h = e.data('cln').html();
+                e.html(h);
+                e.css({'display':'block'});
+                o.remove();
+                e.removeData();
+             }
         },
 
         /* Public function to set focus to the scrollable area */
