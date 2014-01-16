@@ -617,6 +617,13 @@
             var d = this.element.data();
             d.tb2.focus();
         }
+		
+		/* Public function to resize table */
+        resize: function(a) {
+            var t = this, d = t.element.data(), o = d.opt;
+            o = $.extend(o, a);
+            this._td();
+        }
 
     });
 
