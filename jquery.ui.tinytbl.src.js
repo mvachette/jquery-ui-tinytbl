@@ -33,7 +33,7 @@
             renderer:false
         },
 
-
+        cellsSelector: 'th,td',
         /**
          * PRIVATE FUNCTIONS
          * ----------------------------------------------------------------------
@@ -55,6 +55,7 @@
                     rowe: d+l+r    /* className for last  row  in any table */
                 };
             }
+
             /* get scrollbar width/height */
             if (!i(t.sbw)) {
                 var c = $('<div style="position:absolute;top:-10000px;left:-10000px;width:100px;height:100px;overflow:scroll;"></div>').appendTo('body');
@@ -68,7 +69,7 @@
 
         /* Add a new row to the table body */
         _ra: function(b, a) {
-            var t = this, d = t.element.data(), o = d.opt, s = 0, tb = 'tbody', tc = 'td,th';
+            var t = this, d = t.element.data(), o = d.opt, s = 0, tb = 'tbody', tc = t.cellsSelector;
             var lc = a.clone(), lt = $(tb,d.tb3), rc = a.clone(), rt = $(tb,d.tb4);
             $(tc,rc).each(function(x) { if (x < o.cols) { $(this).remove(); } });
             $(tc,lc).each(function(x) { if (x > (o.cols)-1) { $(this).remove(); } });
@@ -118,7 +119,7 @@
                     }
                 }
                 y.each(function() {
-                    var b = $(this).children('td,th');
+                    var b = $(this).children(t.cellsSelector);
                     $(b).removeClass(c.colb).removeClass(c.cole);
                     $(b[0]).addClass(c.colb);
                     $(b[b.length-1]).addClass(c.cole);
@@ -166,11 +167,11 @@
             }
 
             $(r).children('table').children('thead,tbody,tfoot').children('tr').each(function() {
-                var y = $(this).children('td,th');
+                var y = $(this).children(t.cellsSelector);
                 y.each(function(z) { if (z < o.cols) { $(this).remove(); } });
             });
             $(l).children('table').children('thead,tbody,tfoot').children('tr').each(function() {
-                var y = $(this).children('td,th');
+                var y = $(this).children(t.cellsSelector);
                 y.each(function(z) { if (z > (o.cols)-1) { $(this).remove(); } });
             });
             t._rs(a);
@@ -178,7 +179,7 @@
 
         /* Syncs the cell height for each row in the left (fixed) and right (scrollable) area */
         _sr: function(a) {
-            var e = this.element, d = e.data(), o = d.opt, l, r, x = 'td,th', y = 'tr';
+            var e = this.element, d = e.data(), o = d.opt, l, r, x = this.cellsSelector, y = 'tr';
             if (!o.cols) {
                 return;
             }
@@ -201,9 +202,13 @@
             }
             var h = { l:[], r:[] };
 
-			$(r).children('table').children('tbody,thead,tfoot').children(y).each(function(i) { h.l[i] = $(x, this).first().height(); });
+            $(r).children('table').children('tbody,thead,tfoot').children(y).each(function(i) { h.l[i] = $(x, this).first().height(); });
             $(l).children('table').children('tbody,thead,tfoot').children(y).each(function(i) { h.r[i] = $(x, this).first(x).height(); });
-			$(r).children('table').children('tbody,thead,tfoot').children(y).each(function(i) { var j = h.r[i]; if (h.l[i] > h.r[i]) { j = h.l[i]; } $(x, this).first().css({'height':j+'px'}); });
+            $(r).children('table').children('tbody,thead,tfoot').children(y).each(function(i) {
+                var j = h.r[i];
+                if (h.l[i] > h.r[i]) { j = h.l[i]; }
+                $(x, this).first().css({'height':j+'px'}); }
+            );
             $(l).children('table').children('tbody,thead,tfoot').children(y).each(function(i) { var j = h.l[i]; if (h.r[i] > h.l[i]) { j = h.r[i]; } $(x, this).first().css({'height':j+'px'}); });
             e.data({size:$.extend(d.size, {hl:l.height(),hr:r.height()})});
         },
@@ -287,21 +292,36 @@
 
         /* Set the dimensions (width/height) of TinyTable */
         _td: function() {
-            var t= this, d = t.element.data(), o = d.opt, s;
-            s = { hl:0, hr:(o.height - d.th2.height() - d.tf2.height()), ws:(o.width - d.tb1.width()-1), wf:0 };
+            var t = this,
+                d = t.element.data(),
+                o = d.opt,
+                s;
+
+            s = {
+                hl:0,
+                hr:(o.height - d.th2.height() - d.tf2.height()),
+                ws:(o.width - d.tb1.width()-1),
+                wf:0
+            };
+
             if (s.hr < 100) { s.hr = 100; }
             s.hl = s.hr;
+
             if (s.ws < 100) { s.ws = 100; }
             s.wf = s.ws;
-            if (d.tb2.width() > s.ws) {
+
+            if (d.tb2.width() > s.ws) { s.hl = s.hl - t.sbw; }
             if (d.tb2.height() > s.hr) { s.wf = s.wf - t.sbw; }
+
             d.tbl.css({'width':(o.width)+'px','height':(o.height)+'px'});
             d.th2.css({'width':s.wf+'px' });
             d.tf2.css({'width':s.wf+'px' });
+
             d.tb1.css({'height':s.hl+'px' });
+
             d.tb2.css({'width':s.ws+'px','height':s.hr+'px' });
-			
-			if (d.tb2.get(0).scrollHeight > d.tb2.get(0).offsetHeight && d.tb2.width() == d.th2.width()) {
+
+            if (d.tb2.get(0).scrollHeight > d.tb2.get(0).offsetHeight && d.tb2.width() == d.th2.width()) {
                 d.th2.css({'width':(s.wf - t.sbw)+'px'});
             }
             if (d.tb2.get(0).scrollWidth > d.tb2.get(0).offsetWidth) {
@@ -354,6 +374,10 @@
             };
             e = t.element;
 
+            if (!t.options.renderer) {
+                t.cellsSelector = 'th:visible,td:visible';
+            }
+
             /* Extend options */
             o = t.options;
             o.direction = (''+o.direction).substring(0, 1).toLowerCase();
@@ -369,7 +393,9 @@
             if ((''+o.height).lastIndexOf('%') !== -1 && nv(o.height) >= 100) {
                 o.height = 'auto';
             }
-            var pa = $('body'), ph = (bw.innerHeight || self.innerHeight || (bd.documentElement && bd.documentElement.clientWidth) || bd.body.clientWidth), pw = (bw.innerWidth || self.innerWidth || (bd.documentElement && bd.documentElement.clientWidth) || bd.body.clientWidth);
+            var pa = $('body'),
+                ph = (bw.innerHeight || self.innerHeight || (bd.documentElement && bd.documentElement.clientWidth) || bd.body.clientWidth),
+                pw = (bw.innerWidth || self.innerWidth || (bd.documentElement && bd.documentElement.clientWidth) || bd.body.clientWidth);
 
             /* Internal width and heights */
             x = { size: { cl:'', cr:'', wl:0, wr:0, hl:0, hr:0 } };
@@ -387,7 +413,7 @@
             }
 
             /* get table cols */
-            tc = $(tr[0]).children('th,td');
+            tc = $(tr[0]).children(this.cellsSelector);
             if (tc.length < 1) {
                 /* no cols? exit! */
                 return;
@@ -409,6 +435,7 @@
                 }
             } else {
                 if (e.parent().get(0).tagName !== 'body' && e.parent().get(0).tagName !== 'html') {
+
                     if (!e.parent().is(':visible')) {
                         if (typeof(console) !== 'undefined' && typeof(console.log) !== 'undefined') {
                             console.log('Info:','Please make shure that the parent element of your table is visible before create it.');
@@ -626,15 +653,14 @@
         focus: function() {
             var d = this.element.data();
             d.tb2.focus();
-        }
-		
-		/* Public function to resize table */
+        },
+
+        /* Public function to resize table */
         resize: function(a) {
             var t = this, d = t.element.data(), o = d.opt;
             o = $.extend(o, a);
             this._td();
         }
-
     });
 
     $.extend($.ui.tinytbl, { version: '2.1.1' });
