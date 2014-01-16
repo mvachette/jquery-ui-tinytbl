@@ -293,13 +293,20 @@
             s.hl = s.hr;
             if (s.ws < 100) { s.ws = 100; }
             s.wf = s.ws;
-            if (d.tb2.width() > s.ws || d.tb2.width() + t.sbw > s.ws || d.tb4.width() > s.ws ) {
+            if (d.tb2.width() > s.ws) {
             if (d.tb2.height() > s.hr) { s.wf = s.wf - t.sbw; }
             d.tbl.css({'width':(o.width)+'px','height':(o.height)+'px'});
             d.th2.css({'width':s.wf+'px' });
             d.tf2.css({'width':s.wf+'px' });
             d.tb1.css({'height':s.hl+'px' });
             d.tb2.css({'width':s.ws+'px','height':s.hr+'px' });
+			
+			if (d.tb2.get(0).scrollHeight > d.tb2.get(0).offsetHeight && d.tb2.width() == d.th2.width()) {
+                d.th2.css({'width':(s.wf - t.sbw)+'px'});
+            }
+            if (d.tb2.get(0).scrollWidth > d.tb2.get(0).offsetWidth) {
+                d.tb1.css({'height':(s.hr - t.sbw)+'px'});
+            }
         },
 
         /* Internal function called via _create */
