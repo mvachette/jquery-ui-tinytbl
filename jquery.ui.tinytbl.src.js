@@ -293,7 +293,7 @@
             s.hl = s.hr;
             if (s.ws < 100) { s.ws = 100; }
             s.wf = s.ws;
-            if (d.tb2.width() > s.ws || d.tb4.width() > s.ws) { s.hl = s.hl - t.sbw; }
+            if (d.tb2.width() > s.ws || d.tb2.width() + t.sbw > s.ws || d.tb4.width() > s.ws ) {
             if (d.tb2.height() > s.hr) { s.wf = s.wf - t.sbw; }
             d.tbl.css({'width':(o.width)+'px','height':(o.height)+'px'});
             d.th2.css({'width':s.wf+'px' });
