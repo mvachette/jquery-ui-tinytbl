@@ -201,9 +201,9 @@
             }
             var h = { l:[], r:[] };
 
-            $(r).children('table').children('tbody,thead,tfoot').children(y).each(function(i) { h.l[i] = $(this).first(x).height(); });
-            $(l).children('table').children('tbody,thead,tfoot').children(y).each(function(i) { h.r[i] = $(this).first(x).height(); });
-            $(r).children('table').children('tbody,thead,tfoot').children(y).each(function(i) { var j = h.r[i]; if (h.l[i] > h.r[i]) { j = h.l[i]; } $(x, this).first().css({'height':j+'px'}); });
+			$(r).children('table').children('tbody,thead,tfoot').children(y).each(function(i) { h.l[i] = $(x, this).first().height(); });
+            $(l).children('table').children('tbody,thead,tfoot').children(y).each(function(i) { h.r[i] = $(x, this).first(x).height(); });
+			$(r).children('table').children('tbody,thead,tfoot').children(y).each(function(i) { var j = h.r[i]; if (h.l[i] > h.r[i]) { j = h.l[i]; } $(x, this).first().css({'height':j+'px'}); });
             $(l).children('table').children('tbody,thead,tfoot').children(y).each(function(i) { var j = h.l[i]; if (h.r[i] > h.l[i]) { j = h.r[i]; } $(x, this).first().css({'height':j+'px'}); });
             e.data({size:$.extend(d.size, {hl:l.height(),hr:r.height()})});
         },
